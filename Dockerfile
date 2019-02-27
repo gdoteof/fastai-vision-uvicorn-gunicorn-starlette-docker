@@ -6,3 +6,5 @@ RUN pip install fastai==1.0.44 aiohttp
 COPY ./app /app
 
 WORKDIR /app
+
+EXPOSE 80
