@@ -1,6 +1,6 @@
 from fastai.vision import *
 from io import BytesIO
-
+from starlette.templating import Jinja2Templates
 
 
 from starlette.applications import Starlette
@@ -12,6 +12,8 @@ import asyncio
 
 app = Starlette()
 
+templates = Jinja2Templates(directory='templates')
+
 async def get_bytes(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -19,7 +21,7 @@ async def get_bytes(url):
 
 @app.route('/')
 async def homepage(request):
-    return JSONResponse({'hello': 'world'})
+    return templates.TemplateResponse('app.html', {'request': request})
 
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
