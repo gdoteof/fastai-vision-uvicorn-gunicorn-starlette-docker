@@ -1,10 +1,11 @@
 from fastai.vision import *
 from io import BytesIO
-from starlette.templating import Jinja2Templates
 
 
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
+from starlette.templating import Jinja2Templates
+
 import uvicorn
 
 import aiohttp
