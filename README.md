@@ -19,9 +19,27 @@ Recommended usage is to use the pre-built (from this repo) images from dockerhub
 
 ## Usage
 
-	Starlette backend provides a `/classify` endpoint and separate callbacks for GET and POST.
 
-	GET requests expect a query param `url` which indicates a URL to an image on the internet which should be classified
+### API
+Starlette backend provides a `/classify` endpoint and separate callbacks for GET and POST.
 
-	POST requests expect the body to be a Byte array of an image to be classified.
+GET requests expect a query param `url` which indicates a URL to an image on the internet which should be classified
+
+Example:
+```
+GET /classify?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2Fd%2Fd4%2FMickey_Mouse.png
+```
+
+Response:
+```
+{"predictions":[["mickey",0.9781272411346436],["computer",0.021808452904224396],["animal",6.434295937651768e-05]]}
+```
+
+POST requests expect the body to be a Byte array of an image to be classified.
+
+
+### Webapp
+Starlette also serves a simple html/javascript app which can serve as a UI to interact with the backend, and display the prediction of a photo.
+
+
 	
