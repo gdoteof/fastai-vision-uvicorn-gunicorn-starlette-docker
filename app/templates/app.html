@@ -1,23 +1,98 @@
 <html>
+
   <head>
-    <title>{title}</title>
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+	  <title>{{title}}</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"></link>
+	<script>
+
+		function updateimg(a,b){
+			url = document.getElementById('url').value;
+			document.getElementById('img').src = url;
+		}
+		function doCallback() {
+			imgUrl = document.getElementById('url').value;
+			var xmlhttp = new XMLHttpRequest();
+			var url = "/classify-url?url=" + encodeURIComponent(imgUrl);
+			xmlhttp.open('GET', url, true);
+			xmlhttp.onreadystatechange = function() {
+			    if (xmlhttp.readyState == 4) {
+				if(xmlhttp.status == 200) {
+				    var obj = JSON.parse(xmlhttp.responseText);
+				    var top_prediction = obj.predictions[0][0];
+					console.log(obj);
+				    set_label(top_prediction);
+					console.log("calling set label with", top_prediction);
+				 }
+			    }
+			};
+			xmlhttp.send(null);
+		}
+		function set_label(tp){
+			console.log("running set label with", tp);
+			document.getElementById('results').textContent = tp;
+		}
+	</script>
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
+      #label{
+	      font-size: 32px;
+      }
+      .flex-container {
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: top;
+          align-items: center;     /* center items horizontally, in this case */
+	  height: 800px;
+	}
+	.row {
+		width: 500px;
+		margin: 5px;
+		text-align: center;     /* will center text in <p>, which is not a flex item */
+	}
+	#img{
+		height: 480px;
+	}
+	#url{
+		width: 100%
+	}
+    </style>
+
   </head>
   <body>
-
-    <h2>Mouse de-ambiguifier</h2>
-
-    <div id="img-container">
-      <img src="noimg" id="img"/>
+    <div class="flex-container">
+      <div class="row">
+        <div class="flex-item">
+		<h2>{{title}} de-ambiguifier</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="flex-item">
+		<h4>Can disambiguate computer mouse, animal mouse, and mickey mouse</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="flex-item">
+	    <div id="img-container">
+	      <img src="noimg" id="img"/>
+	    </div>
+        </div>
+      </div>
+      <div id="url-container" class="row">
+        <input type="text" id="url" placeholder="http://somewhere.com/something.jpg" onchange="updateimg()" onpaste="this.onchange()" oninput="this.onchange()"/>
+      </div>
+      <div id="results-container" class="row">
+	      <div id="results"></div>
+      </div>
+  
+      <div id="button-container" class="row">
+        <button id="button" onclick="doCallback()">Classify</button>
+      </div>
     </div>
-
-    <div id="url-container">
-      <input type="text" id="url" placeholder="http://somewhere.com/something.jpg"/>
-    </div>
-
-    <div id="button-container">
-      <button id="button">Classify</button>
-    </div>
-
   </body>
 </html>
+<!-- vim: set ts=2 sw=2 -->
