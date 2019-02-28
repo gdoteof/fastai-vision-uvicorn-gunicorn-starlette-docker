@@ -22,7 +22,7 @@ async def get_bytes(url):
 
 @app.route('/')
 async def homepage(request):
-    return templates.TemplateResponse('app.html', {'request': request})
+    return templates.TemplateResponse('app.html', {'request': request, 'title': "Mouse!"})
 
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
