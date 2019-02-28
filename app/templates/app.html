@@ -2,14 +2,49 @@
 
   <head>
 	  <title>{{title}}</title>
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"></link>
 	<script>
 
-		function updateimg(a,b){
+		function previewFile(){
+			var preview = document.getElementById('img'); 
+			var file    = document.getElementById('uploaded').files[0]; 
+			var reader  = new FileReader();
+
+			reader.onloadend = function () {
+			   preview.src = reader.result;
+			}
+
+			if (file) {
+			   reader.readAsDataURL(file); //reads the data as a URL
+			} else {
+			   preview.src = "";
+			}
+		}
+		function updateimg(){
 			url = document.getElementById('url').value;
 			document.getElementById('img').src = url;
 		}
-		function doCallback() {
+		function chooseCallback(){
+			var uploaded =  document.getElementById('uploaded').files[0];
+			if(uploaded){
+				doPostCallback(uploaded);
+			} else {
+				doGetCallback();
+			}
+		}
+		function doPostCallback(uploaded){
+			console.log(uploaded);
+			fetch("/classify-url", {
+			  method: "POST",
+			  body: uploaded
+			}).then(res => {
+				return res.json().then(obj=> {
+					console.log("deeep",obj);
+				    var top_prediction = obj.predictions[0][0];
+				    set_label(top_prediction);
+				})
+			});
+		}
+		function doGetCallback() {
 			imgUrl = document.getElementById('url').value;
 			var xmlhttp = new XMLHttpRequest();
 			var url = "/classify-url?url=" + encodeURIComponent(imgUrl);
@@ -85,12 +120,18 @@
       <div id="url-container" class="row">
         <input type="text" id="url" placeholder="http://somewhere.com/something.jpg" onchange="updateimg()" onpaste="this.onchange()" oninput="this.onchange()"/>
       </div>
+      <div id="or-container" class="row">
+	      <span id="or">-- or --</span>
+      </div>
+      <div id="uploaded-container" class="row">
+	<input type="file" id="uploaded" name="uploaded" accept="image/*" onchange="previewFile()"/>
+      </div>
       <div id="results-container" class="row">
 	      <div id="results"></div>
       </div>
   
       <div id="button-container" class="row">
-        <button id="button" onclick="doCallback()">Classify</button>
+        <button id="button" onclick="chooseCallback()">Classify</button>
       </div>
     </div>
   </body>

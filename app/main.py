@@ -37,3 +37,17 @@ async def classify_url(request):
             reverse=True
 
         )})
+
+@app.route("/classify-url", methods=["POST"])
+async def classify_url(request):
+    bytes = await request.body()
+    img = open_image(BytesIO(bytes))
+    learner = load_learner(Path("/app"))
+    _,_,losses = learner.predict(img)
+    return JSONResponse({
+        "predictions": sorted(
+            zip(learner.data.classes, map(float, losses)),
+            key=lambda p: p[1],
+            reverse=True
+
+        )})
