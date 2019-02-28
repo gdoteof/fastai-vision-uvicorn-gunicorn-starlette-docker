@@ -1,7 +1,7 @@
 <html>
 
   <head>
-	  <title>{{title}}</title>
+	  <title>{{env.TITLE}}</title>
 	<script>
 
 		function previewFile(){
@@ -102,18 +102,20 @@
     <div class="flex-container">
       <div class="row">
         <div class="flex-item">
-		<h2>{{title}} de-ambiguifier</h2>
+		<h2>{{env.TITLE}}</h2>
         </div>
       </div>
       <div class="row">
         <div class="flex-item">
-		<h4>Can disambiguate computer mouse, animal mouse, and mickey mouse</h4>
+		<h4>{{env.SUBTITLE}}</h4>
         </div>
       </div>
       <div class="row">
         <div class="flex-item">
 	    <div id="img-container">
-	      <img src="noimg" id="img"/>
+		    <figure>
+		      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw" id="img"/>
+		    </figure>
 	    </div>
         </div>
       </div>

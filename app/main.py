@@ -11,6 +11,8 @@ import uvicorn
 import aiohttp
 import asyncio
 
+import os
+
 app = Starlette()
 
 templates = Jinja2Templates(directory='templates')
@@ -22,7 +24,8 @@ async def get_bytes(url):
 
 @app.route('/')
 async def homepage(request):
-    return templates.TemplateResponse('app.html', {'request': request, 'title': "Mouse!"})
+    env = os.environ
+    return templates.TemplateResponse('app.html', {'request': request, 'env': env})
 
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
