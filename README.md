@@ -1,11 +1,11 @@
-#Docker image for doing inference on vision models trained with fastai
+# Docker image for doing inference on vision models trained with fastai
 
 This docker image is a wrapper around https://github.com/tiangolo/uvicorn-gunicorn-starlette-docker, adding the dependencies to run fastai models, as well as a minimal "webapp" to make requests.
 
 Known Problems:
  - Fastai vision models are not necessarily compatible version to version (TODO: tags for each fastai version)
 
-##Installation
+## Installation
 
 Recommended usage is to use the pre-built (from this repo) images from dockerhub, and overwrite the export.pkl at runtime, and provide environment variables.
 
@@ -17,7 +17,7 @@ Recommended usage is to use the pre-built (from this repo) images from dockerhub
 		gdoteof/fastai-vision-uvicorn-gunicorn-starlette-docker
 ```
 
-##Usage
+## Usage
 
 	Starlette backend provides a `/classify` endpoint and separate callbacks for GET and POST.
 
