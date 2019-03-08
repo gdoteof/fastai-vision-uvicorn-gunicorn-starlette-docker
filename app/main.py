@@ -17,6 +17,14 @@ app = Starlette()
 
 templates = Jinja2Templates(directory='templates')
 
+@app.middleware("http")
+async def add_custom_header(request, call_next):
+    response = await call_next(request)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
+
 async def get_bytes(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
