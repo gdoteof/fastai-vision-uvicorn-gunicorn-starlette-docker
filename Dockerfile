@@ -1,7 +1,7 @@
 FROM tiangolo/uvicorn-gunicorn-starlette:python3.6
 
 
-RUN pip install fastai==1.0.46 aiohttp
+RUN pip install fastai==1.0.44 aiohttp
 
 RUN pip install jinja2
 
