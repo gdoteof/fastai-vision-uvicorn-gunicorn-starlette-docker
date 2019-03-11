@@ -23,8 +23,8 @@ templates = Jinja2Templates(directory='templates')
 
 
 headers = {}
-headers['Access-Control-Allow-headers'] = '*'
-headers['Access-Control-Allow-origin'] = '*'
+headers['Access-Control-Allow-Headers'] = 'Content-Type'
+headers['Access-Control-Allow-Origin'] = '*'
 
 
 async def get_bytes(url):
