@@ -27,6 +27,21 @@ headers['Access-Control-Allow-Headers'] = 'Content-Type'
 headers['Access-Control-Allow-Origin'] = '*'
 
 
+@app.middleware("http")
+async def add_custom_header(request, call_next):
+    response = await call_next(request)
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    if (hasattr(request.headers, 'referer')):
+        urlpieces = s.rsplit('/',request.headers.referer)
+        ref = urlpieces[0] + "//" + urlpieces[1]
+        response.headers['Access-Control-Allow-Origin'] = ref
+    else:
+        response.headers['Access-Control-Allow-Origin'] = "*"
+
+
+    return response
+
+
 async def get_bytes(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -46,7 +61,6 @@ async def classify_url(request):
 
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
-    logging.debug('inside the get')
     bytes = await get_bytes(request.query_params["url"])
     img = open_image(BytesIO(bytes))
     learner = load_learner(Path("/app"))
@@ -64,12 +78,11 @@ async def classify_url(request):
     img = open_image(BytesIO(bytes))
     learner = load_learner(Path("/app"))
     _,_,losses = learner.predict(img)
-    logging.debug(sorted(
-            zip(learner.data.classes, map(float, losses)),
-            key=lambda p: p[1],
-            reverse=True
 
-        ));
+    logging.debug("=======")
+    logging.debug(request.headers)
+    logging.debug("=======")
+
     return JSONResponse({
         "predictions": sorted(
             zip(learner.data.classes, map(float, losses)),
