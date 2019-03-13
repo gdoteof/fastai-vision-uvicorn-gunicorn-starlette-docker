@@ -29,16 +29,10 @@ headers['Access-Control-Allow-Origin'] = '*'
 
 @app.middleware("http")
 async def add_custom_header(request, call_next):
+
     response = await call_next(request)
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    if (hasattr(request.headers, 'referer')):
-        urlpieces = s.rsplit('/',request.headers.referer)
-        ref = urlpieces[0] + "//" + urlpieces[1]
-        response.headers['Access-Control-Allow-Origin'] = ref
-    else:
-        response.headers['Access-Control-Allow-Origin'] = "*"
-
-
+    response.headers['Access-Control-Allow-Origin'] = request.headers['origin']
     return response
 
 
@@ -79,9 +73,6 @@ async def classify_url(request):
     learner = load_learner(Path("/app"))
     _,_,losses = learner.predict(img)
 
-    logging.debug("=======")
-    logging.debug(request.headers)
-    logging.debug("=======")
 
     return JSONResponse({
         "predictions": sorted(
