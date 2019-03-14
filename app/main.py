@@ -22,17 +22,23 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 templates = Jinja2Templates(directory='templates')
 
 
-headers = {}
-headers['Access-Control-Allow-Headers'] = 'Content-Type'
-headers['Access-Control-Allow-Origin'] = '*'
-
 
 @app.middleware("http")
 async def add_custom_header(request, call_next):
 
+
+    logging.info("====infostart====")
+    logging.info("====debugstart====")
+    logging.debug(request.headers)
     response = await call_next(request)
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    response.headers['Access-Control-Allow-Origin'] = request.headers['origin']
+    if ('origin' in request.headers.keys()):
+        logging.debug("ORIGIN header found")
+        response.headers['Access-Control-Allow-Origin'] = request.headers['origin']
+    else:
+        logging.debug("ORIGIN header NOT found")
+        response.headers['Access-Control-Allow-Origin'] = '*'
+    logging.info("====debugend====")
     return response
 
 
@@ -51,7 +57,7 @@ async def homepage(request):
 async def classify_url(request):
     return JSONResponse({
         'empty': 'resposne'
-        }, headers=headers)
+        })
 
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
@@ -64,7 +70,7 @@ async def classify_url(request):
             zip(learner.data.classes, map(float, losses)),
             key=lambda p: p[1],
             reverse=True
-        )}, headers=headers)
+        )})
 
 @app.route("/classify-url", methods=["POST"])
 async def classify_url(request):
@@ -80,5 +86,5 @@ async def classify_url(request):
             key=lambda p: p[1],
             reverse=True
 
-        )}, headers=headers)
+        )})
 
