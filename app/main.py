@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 import logging, sys
 
 from starlette.applications import Starlette
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
 from starlette.templating import Jinja2Templates
 
 import uvicorn
@@ -25,13 +25,12 @@ templates = Jinja2Templates(directory='templates')
 
 @app.middleware("http")
 async def add_custom_header(request, call_next):
-
-
     logging.info("====infostart====")
     logging.info("====debugstart====")
     logging.debug(request.headers)
     response = await call_next(request)
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    response.headers['Allow'] = 'OPTIONS, GET, POST'
     if ('origin' in request.headers.keys()):
         logging.debug("ORIGIN header found")
         response.headers['Access-Control-Allow-Origin'] = request.headers['origin']
@@ -53,11 +52,17 @@ async def homepage(request):
     return templates.TemplateResponse('app.html', {'request': request, 'env': env})
 
 
+class OptionsResponse(Response):
+    media_type = None
+    headers = {
+            'Allow': 'OPTIONS, GET, POST',
+    }
+
+
 @app.route("/classify-url", methods=["OPTIONS"])
 async def classify_url(request):
-    return JSONResponse({
-        'empty': 'resposne'
-        })
+    headers = {'Allow': 'OPTIONS, GET, POST'}
+    return OptionsResponse(None)
 
 @app.route("/classify-url", methods=["GET"])
 async def classify_url(request):
