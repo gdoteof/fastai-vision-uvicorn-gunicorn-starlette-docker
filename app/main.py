@@ -26,7 +26,7 @@ templates = Jinja2Templates(directory='templates')
 @app.middleware("http")
 async def add_custom_header(request, call_next):
     logging.info("====infostart====")
-    logging.info("====debugstart====")
+    logging.info("====something====")
     logging.debug(request.headers)
     response = await call_next(request)
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
